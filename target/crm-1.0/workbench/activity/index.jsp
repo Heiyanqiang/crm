@@ -24,11 +24,32 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				操作模态窗口的方式：
 					需要操作的模态窗口的jQuery对象，调用modal方法，为该方法传递参数 show：打开模态窗口 hide：关闭窗口
 			*/
+			//
+			// alert(3333);
+			//
+			//走后台，目的是为了取得用户信息列表，为所有者下拉框铺值
+			$.ajax({
+				url :"workbench/activity/getUserList.do",
+				type :"get",
+				dataType :"json",
+				success : function (data) {
+					var html = "<option></option>";
+					//遍历出来的每个n，就是每一个user对象
+					$.each(data,function (i,n) {
+						html += "<option value='"+n.id+"'>"+ n.name +"</option>"
+					})
+					$("#create-owner").html(html);
 
-			$("#createActivityModal").modal("show");
+					//将当前登录的用户，设置为下拉框默认的选项
+					//取得当前用户的id
+					//在js中使用el表达式，el表达式一定要套用在字符串中
+					var id = "${user.id}";
+					$("#create-owner").val(id);
+					//所有者下拉框处理完毕后，展现模态窗口
+					$("#createActivityModal").modal("show");
+				}
+			})
 		})
-		
-		
 	});
 	
 </script>
@@ -52,10 +73,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-owner">
+
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
